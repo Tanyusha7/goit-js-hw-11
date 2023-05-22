@@ -6,7 +6,7 @@ function searchPicturesByName(searchName) {
   return fetch(
     `${BASE_URL}?key=${API_KEY}&q=${searchName}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`
   ).then(res => {
-    console.log(res);
+    // console.log(res);
     if (!res.ok) {
       throw new Error(res.status);
     }
