@@ -1,11 +1,9 @@
-// import axios from 'axios';
-// console.log(axios);
 //
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { searchPicturesByName } from './searchPictures';
-import { markupGalleryPictures, linkPicturesMarkup } from './markupGallery';
+import { markupGalleryPictures } from './markupGallery';
 //-------
 // import { onload, observer, target } from './scrollObserver';
 // export { currentPage };
@@ -39,21 +37,13 @@ function onSubmit(e) {
 
   searchPicturesByName(searchName)
     .then(data => {
-      console.log(data);
-      console.log(data.hits);
+      // console.log(data);
+
       galleryEl.insertAdjacentHTML(
         'beforeend',
         markupGalleryPictures(data.hits)
       );
-
-      // let gallery = `('.gallery a')`.simpleLightbox();
-      // gallery.on('show.simplelightbox', function (e) {
-      //   e.preventDefault();
-      //   // Do something…
-      // });
-
-      // console.log(gallery);
-      // lightbox.show();
+      // galleryEl.innerHTML = markupGalleryPictures(data.hits);
       // observer.observe(target);
       if (data.hits.length === 0) {
         return Notify.failure(
