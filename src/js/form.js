@@ -39,7 +39,7 @@ function onSubmit(e) {
 
   searchPicturesByName(searchName)
     .then(data => {
-      console.log(response);
+      console.log(data);
       console.log(data.hits);
       galleryEl.insertAdjacentHTML(
         'beforeend',
