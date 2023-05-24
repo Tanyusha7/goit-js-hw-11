@@ -10,6 +10,7 @@ import { markupGalleryPictures } from './markupGallery';
 
 const form = document.querySelector('.search-form');
 console.dir(form);
+
 const galleryEl = document.querySelector('.gallery');
 console.log(galleryEl);
 
@@ -20,16 +21,16 @@ form.addEventListener('submit', onSubmit);
 btnLoadMore.addEventListener('click', onLoadPic);
 let data;
 let searchName;
-let currentPage = 12;
+let currentPage;
 let totalPage;
 ////
 
-////
 function onSubmit(e) {
   e.preventDefault();
+
+  galleryEl.innerHTML = '';
   const inputSearch = e.target.elements.searchQuery;
   searchName = inputSearch.value;
-  console.dir(searchName);
 
   if (searchName === '') {
     return Notify.info('This field cannot be empty! Please, fill the field!');
@@ -37,13 +38,14 @@ function onSubmit(e) {
 
   searchPicturesByName(searchName)
     .then(data => {
-      // console.log(data);
+      currentPage = 1;
+      galleryEl.innerHTML = '';
 
       galleryEl.insertAdjacentHTML(
         'beforeend',
         markupGalleryPictures(data.hits)
       );
-      // galleryEl.innerHTML = markupGalleryPictures(data.hits);
+
       // observer.observe(target);
       if (data.hits.length === 0) {
         return Notify.failure(
@@ -52,13 +54,11 @@ function onSubmit(e) {
       }
 
       totalPage = data.totalHits / data.hits.length;
-      // console.log(totalPage);
-      // console.log(currentPage);
 
       if (currentPage <= totalPage) {
-        btnLoadMore.hidden = false;
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
       }
+      btnLoadMore.hidden = false;
     })
     .catch(err => console.log(err));
 }

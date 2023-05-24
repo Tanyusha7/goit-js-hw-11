@@ -1,9 +1,41 @@
+.search-form {
+  padding: 15px;
+  background-color: rgb(255, 86, 213);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+}
+
+.search-form input {
+  padding: 8px;
+}
+
+.search-form button {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.load-more {
+  padding: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus {
+  background-color: rgb(48, 48, 241);
+  color: aliceblue;
+}
+
 .gallery {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
   padding: 10px;
+  margin-top: 70px;
 }
 
 .info {
