@@ -1,5 +1,5 @@
 .search-form {
-  padding: 15px;
+  padding: 10px;
   background-color: rgb(255, 86, 213);
   position: fixed;
   top: 0;
@@ -10,16 +10,22 @@
 
 .search-form input {
   padding: 8px;
+  border: 1px solid teal;
 }
 
 .search-form button {
   padding: 8px;
+  background-color: aliceblue;
+  border: 1px solid teal;
   cursor: pointer;
 }
 
 .load-more {
   padding: 10px;
   margin-bottom: 15px;
+  background-color: aliceblue;
+  border: 1px solid rgb(107, 163, 231);
+  border-radius: 8%;
   cursor: pointer;
 }
 

@@ -11,7 +11,8 @@ export function markupGalleryPictures(arr) {
         downloads,
       }) =>
         `<div class="photo-card">
-  <img src="${webformatURL}"  alt="${tags}" loading="lazy" />
+  <a href="${largeImageURL}" >
+ <img src="${webformatURL}"  alt="${tags}" loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
       <b>Likes</b> ${likes}
@@ -30,8 +31,3 @@ export function markupGalleryPictures(arr) {
     )
     .join('');
 }
-
-//  <div class="photo-card">
-//         <a class="gallery__link" href="${largeImageURL}" >
-//   <img src="${webformatURL}"  alt="${tags}" loading="lazy" /></a>
-//   <div class="info">
