@@ -4,7 +4,7 @@ import axios from 'axios';
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '36598866-faf31dce067f679b718909053';
 
-const axios = require('axios');
+// const axios = require('axios');
 
 async function searchPicturesByName(searchName, page = 1) {
   try {
