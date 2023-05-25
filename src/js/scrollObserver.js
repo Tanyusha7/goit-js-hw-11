@@ -38,3 +38,9 @@ function onLoad(entries, observer) {
     }
   });
 }
+
+// let counter = 0;
+// document.addEventListener('scroll', () => {
+//   counter += 1;
+//   console.log(counter);
+// });

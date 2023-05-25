@@ -54,8 +54,6 @@ function onSubmit(e) {
 
       gallery = new SimpleLightbox('.photo-card a');
 
-      console.log(gallery);
-
       // observer.observe(target);
       if (data.total === 0) {
         btnLoadMore.hidden = true;
@@ -97,11 +95,6 @@ function onLoadPic() {
 }
 
 ///------------------------
-// let counter = 0;
-// document.addEventListener('scroll', () => {
-//   counter += 1;
-//   console.log(counter);
-// });
 
 ////----INFINITY SCROLL OBSERVER---///
 // let options = {
