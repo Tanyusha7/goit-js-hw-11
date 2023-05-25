@@ -4,7 +4,9 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { searchPicturesByName } from './searchPictures';
 import { markupGalleryPictures } from './markupGallery';
-import { onScroll } from './windowScroll';
+// import { onScroll } from './windowScroll';
+import InfiniteScroll from 'infinite-scroll';
+import axios from 'axios';
 //-------
 // import { onload, observer, target } from './scrollObserver';
 // export { currentPage };
@@ -19,16 +21,20 @@ console.log(galleryEl);
 const btnLoadMore = document.querySelector('.load-more');
 console.dir(btnLoadMore);
 
-document.addEventListener('scroll', onScroll);
+// document.addEventListener('scroll', onScroll);
 form.addEventListener('submit', onSubmit);
 btnLoadMore.addEventListener('click', onLoadPic);
-
+let infScroll;
 let data;
 let searchName;
 let currentPage;
 let totalPage;
 let gallery;
+let page;
 ////
+
+/////
+/////
 
 function onSubmit(e) {
   e.preventDefault();
@@ -42,8 +48,11 @@ function onSubmit(e) {
     return Notify.info('This field cannot be empty! Please, fill the field!');
   }
 
-  searchPicturesByName(searchName)
+  searchPicturesByName(searchName, page)
     .then(data => {
+      console.dir(data);
+      console.log(page);
+
       currentPage = 1;
       galleryEl.innerHTML = '';
 
@@ -51,6 +60,7 @@ function onSubmit(e) {
         'beforeend',
         markupGalleryPictures(data.hits)
       );
+      // console.dir(galleryEl);
 
       gallery = new SimpleLightbox('.photo-card a');
 
@@ -81,7 +91,14 @@ function onLoadPic() {
         'beforeend',
         markupGalleryPictures(data.hits)
       );
+      ////
 
+      //  infScroll = new InfiniteScroll('.container',
+      //    options);
+      //
+      // infScroll.loadNextPage();
+
+      ////
       gallery = new SimpleLightbox('.photo-card a');
       gallery.refresh();
       if (currentPage > totalPage) {
@@ -93,6 +110,29 @@ function onLoadPic() {
     })
     .catch(err => console.log(err));
 }
+////
+let options = {
+  // checkLastPage: true,
+  // loadOnScroll: true,
+  scrollThreshold: 200,
+  path: onLoadPage(),
+  status: '.page-load-status',
+  history: false,
+  hideNav: '.pagination',
+};
+
+function onLoadPage() {
+  // let loadCount = 0;
+  // pageIndex: 1;
+  console.log(data);
+  let pageNumber = (loadCount + 1) * 5;
+  console.log(pageNumber);
+  return `/articles/P${pageNumber}`;
+}
+infScroll = new InfiniteScroll(galleryEl, options);
+console.dir(infScroll);
+////
+////
 
 ///------------------------
 
