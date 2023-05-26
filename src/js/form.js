@@ -2,39 +2,27 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { searchPicturesByName } from './searchPictures';
+import { searchPicturesByName, pageNext } from './searchPictures';
 import { markupGalleryPictures } from './markupGallery';
-// import { onScroll } from './windowScroll';
-import InfiniteScroll from 'infinite-scroll';
-import axios from 'axios';
+
+// import InfiniteScroll from 'infinite-scroll';
+
 //-------
 // import { onload, observer, target } from './scrollObserver';
 // export { currentPage };
 
 const form = document.querySelector('.search-form');
-console.dir(form);
-
 const galleryEl = document.querySelector('.gallery');
-
-console.log(galleryEl);
-
 const btnLoadMore = document.querySelector('.load-more');
-console.dir(btnLoadMore);
-
-// document.addEventListener('scroll', onScroll);
+document.addEventListener('scroll', onScroll);
 form.addEventListener('submit', onSubmit);
 btnLoadMore.addEventListener('click', onLoadPic);
-let infScroll;
+
 let data;
 let searchName;
 let currentPage;
 let totalPage;
 let gallery;
-let page;
-////
-
-/////
-/////
 
 function onSubmit(e) {
   e.preventDefault();
@@ -48,11 +36,8 @@ function onSubmit(e) {
     return Notify.info('This field cannot be empty! Please, fill the field!');
   }
 
-  searchPicturesByName(searchName, page)
+  searchPicturesByName(searchName)
     .then(data => {
-      console.dir(data);
-      console.log(page);
-
       currentPage = 1;
       galleryEl.innerHTML = '';
 
@@ -60,8 +45,9 @@ function onSubmit(e) {
         'beforeend',
         markupGalleryPictures(data.hits)
       );
-      // console.dir(galleryEl);
 
+      onScroll();
+      //////
       gallery = new SimpleLightbox('.photo-card a');
 
       // observer.observe(target);
@@ -91,16 +77,10 @@ function onLoadPic() {
         'beforeend',
         markupGalleryPictures(data.hits)
       );
-      ////
-
-      //  infScroll = new InfiniteScroll('.container',
-      //    options);
-      //
-      // infScroll.loadNextPage();
-
-      ////
+      onScroll();
       gallery = new SimpleLightbox('.photo-card a');
       gallery.refresh();
+
       if (currentPage > totalPage) {
         btnLoadMore.hidden = true;
         Notify.info(
@@ -110,29 +90,20 @@ function onLoadPic() {
     })
     .catch(err => console.log(err));
 }
-////
-let options = {
-  // checkLastPage: true,
-  // loadOnScroll: true,
-  scrollThreshold: 200,
-  path: onLoadPage(),
-  status: '.page-load-status',
-  history: false,
-  hideNav: '.pagination',
-};
 
-function onLoadPage() {
-  // let loadCount = 0;
-  // pageIndex: 1;
-  console.log(data);
-  let pageNumber = (loadCount + 1) * 5;
-  console.log(pageNumber);
-  return `/articles/P${pageNumber}`;
+function onScroll() {
+  if (galleryEl.firstChild === null) {
+    return;
+  }
+  const { height } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: height * 2,
+    behavior: 'smooth',
+  });
 }
-infScroll = new InfiniteScroll(galleryEl, options);
-console.dir(infScroll);
-////
-////
 
 ///------------------------
 
