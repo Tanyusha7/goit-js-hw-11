@@ -5,16 +5,10 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { searchPicturesByName, pageNext } from './searchPictures';
 import { markupGalleryPictures } from './markupGallery';
 
-// import InfiniteScroll from 'infinite-scroll';
-
-//-------
-// import { onload, observer, target } from './scrollObserver';
-// export { currentPage };
-
 const form = document.querySelector('.search-form');
 const galleryEl = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more');
-document.addEventListener('scroll', onScroll);
+
 form.addEventListener('submit', onSubmit);
 btnLoadMore.addEventListener('click', onLoadPic);
 
@@ -24,86 +18,80 @@ let currentPage;
 let totalPage;
 let gallery;
 
-function onSubmit(e) {
-  e.preventDefault();
+async function onSubmit(e) {
+  try {
+    e.preventDefault();
 
-  galleryEl.innerHTML = '';
-  const inputSearch = e.target.elements.searchQuery;
-  searchName = inputSearch.value;
-
-  if (searchName === '') {
+    galleryEl.innerHTML = '';
     btnLoadMore.hidden = true;
-    return Notify.info('This field cannot be empty! Please, fill the field!');
-  }
+    const inputSearch = e.target.elements.searchQuery;
+    searchName = inputSearch.value.trim();
 
-  searchPicturesByName(searchName)
-    .then(data => {
-      currentPage = 1;
-      galleryEl.innerHTML = '';
+    if (searchName === '') {
+      btnLoadMore.hidden = true;
+      return Notify.info('This field cannot be empty! Please, fill the field!');
+    }
+    const data = await searchPicturesByName(searchName);
+    currentPage = 1;
+    galleryEl.innerHTML = '';
 
-      galleryEl.insertAdjacentHTML(
-        'beforeend',
-        markupGalleryPictures(data.hits)
+    galleryEl.insertAdjacentHTML('beforeend', markupGalleryPictures(data.hits));
+
+    gallery = new SimpleLightbox('.photo-card a');
+
+    // observer.observe(target);
+    if (data.total === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
       );
+    }
+    if (data.total > 40) {
+      btnLoadMore.hidden = false;
+    }
 
-      onScroll();
-      //////
-      gallery = new SimpleLightbox('.photo-card a');
-
-      // observer.observe(target);
-      if (data.total === 0) {
-        btnLoadMore.hidden = true;
-        Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-
-      totalPage = data.totalHits / data.hits.length;
-
-      if (currentPage <= totalPage) {
-        btnLoadMore.hidden = false;
-        Notify.success(`Hooray! We found ${data.totalHits} images.`);
-      }
-    })
-    .catch(err => console.log(err));
+    if (data.total > 1) {
+      return Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    }
+  } catch (error) {
+    console.log(err);
+  }
 }
 ///------------///
 
-function onLoadPic() {
-  currentPage += 1;
-  searchPicturesByName(searchName, currentPage)
-    .then(data => {
-      galleryEl.insertAdjacentHTML(
-        'beforeend',
-        markupGalleryPictures(data.hits)
+async function onLoadPic() {
+  try {
+    currentPage += 1;
+
+    const data = await searchPicturesByName(searchName, currentPage);
+
+    galleryEl.insertAdjacentHTML('beforeend', markupGalleryPictures(data.hits));
+
+    gallery = new SimpleLightbox('.photo-card a');
+    gallery.refresh();
+    if (data.hits.length < 40) {
+      btnLoadMore.hidden = true;
+      return Notify.info(
+        "We're sorry, but you've reached the end of search results."
       );
-      onScroll();
-      gallery = new SimpleLightbox('.photo-card a');
-      gallery.refresh();
-
-      if (currentPage > totalPage) {
-        btnLoadMore.hidden = true;
-        Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-      }
-    })
-    .catch(err => console.log(err));
-}
-
-function onScroll() {
-  if (galleryEl.firstChild === null) {
-    return;
+    }
+  } catch (error) {
+    console.log(err);
   }
-  const { height } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-    top: height * 2,
-    behavior: 'smooth',
-  });
 }
+
+// function onScroll() {
+//   if (galleryEl.firstChild === null) {
+//     return;
+//   }
+//   const { height } = document
+//     .querySelector('.gallery')
+//     .firstElementChild.getBoundingClientRect();
+
+//   window.scrollBy({
+//     top: height * 2,
+//     behavior: 'smooth',
+//   });
+// }
 
 ///------------------------
 
