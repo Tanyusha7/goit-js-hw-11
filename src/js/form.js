@@ -31,7 +31,7 @@ async function onSubmit(e) {
       btnLoadMore.hidden = true;
       return Notify.info('This field cannot be empty! Please, fill the field!');
     }
-    const data = await searchPicturesByName(searchName);
+    data = await searchPicturesByName(searchName);
     currentPage = 1;
     galleryEl.innerHTML = '';
 
@@ -45,6 +45,8 @@ async function onSubmit(e) {
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
+    totalPage = data.totalHits / data.hits.length;
+
     if (data.total > 40) {
       btnLoadMore.hidden = false;
     }
@@ -62,13 +64,14 @@ async function onLoadPic() {
   try {
     currentPage += 1;
 
-    const data = await searchPicturesByName(searchName, currentPage);
+    data = await searchPicturesByName(searchName, currentPage);
 
     galleryEl.insertAdjacentHTML('beforeend', markupGalleryPictures(data.hits));
 
     gallery = new SimpleLightbox('.photo-card a');
     gallery.refresh();
-    if (data.hits.length < 40) {
+
+    if (currentPage > totalPage) {
       btnLoadMore.hidden = true;
       return Notify.info(
         "We're sorry, but you've reached the end of search results."
@@ -119,7 +122,8 @@ async function onLoadPic() {
 //             'beforeend',
 //             markupGalleryPictures(data.hits)
 //           );
-//           if (currentPage > totalPage) {
+//           if (data.hits.length < 40) {
+//             btnLoadMore.hidden = true;
 //             observer.unobserve(target);
 //             Notify.info(
 //               "We're sorry, but you've reached the end of search results."
